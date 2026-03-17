@@ -4,8 +4,15 @@ import json
 from pyscript import document, window
 from pyodide.ffi import create_proxy
 
+# Helper function to convert Hex + Alpha to RGBA for Plotly
+def hex_to_rgba(hex_color, alpha):
+    hex_color = hex_color.lstrip('#')
+    r = int(hex_color[0:2], 16)
+    g = int(hex_color[2:4], 16)
+    b = int(hex_color[4:6], 16)
+    return f"rgba({r}, {g}, {b}, {alpha})"
+
 def generate_graph(event):
-    # 1. Get the file from the input element
     file_input = document.getElementById('csv-upload')
     
     if file_input.files.length == 0:
@@ -14,58 +21,61 @@ def generate_graph(event):
 
     file = file_input.files.item(0)
 
-    # 2. Define a callback to process the file once it's read
     def process_data(e):
-        # Read the text content of the CSV
         csv_text = e.target.result
-        
-        # Load into Pandas
         df = pd.read_csv(io.StringIO(csv_text))
         
-        # We assume the CSV has at least two numeric columns and a label column
-        # For robustness, we'll just grab the first three columns
         cols = df.columns
-        if len(cols) < 2:
-            window.alert("CSV needs at least 2 columns for X and Y.")
+        # Now requiring at least 3 columns for 3D
+        if len(cols) < 3:
+            window.alert("CSV needs at least 3 columns for X, Y, and Z.")
             return
             
         x_col = cols[0]
         y_col = cols[1]
-        text_col = cols[2] if len(cols) > 2 else cols[0]
+        z_col = cols[2]
+        # Use the 4th column as text labels, otherwise default to X
+        text_col = cols[3] if len(cols) > 3 else cols[0]
 
-        # Get the custom colors from the UI
+        # Get values from UI
         pt_color = document.getElementById('pt-color').value
         ln_color = document.getElementById('ln-color').value
+        ln_opacity = document.getElementById('ln-opacity').value
+        
+        # Convert to RGBA for line transparency
+        rgba_line_color = hex_to_rgba(ln_color, ln_opacity)
 
-        # 3. Create the Plotly JSON trace data
+        # 3D Plotly Trace
         trace = {
             "x": df[x_col].tolist(),
             "y": df[y_col].tolist(),
+            "z": df[z_col].tolist(),
             "mode": "markers+lines+text",
-            "type": "scatter",
+            "type": "scatter3d",  # Changed to 3D
             "text": df[text_col].tolist(),
             "textposition": "top center",
-            "marker": { "color": pt_color, "size": 10 },
-            "line": { "color": ln_color, "width": 2 }
+            "marker": { "color": pt_color, "size": 6 }, # Slightly smaller markers for 3D
+            "line": { "color": rgba_line_color, "width": 4 } # Uses custom RGBA
         }
         
+        # 3D Layout
         layout = {
-            "title": "Anthropac Output Graph",
-            "xaxis": { "title": x_col },
-            "yaxis": { "title": y_col },
+            "title": "3D Anthropac Output Graph",
+            "scene": {
+                "xaxis": { "title": x_col },
+                "yaxis": { "title": y_col },
+                "zaxis": { "title": z_col }
+            },
+            "margin": {"l": 0, "r": 0, "b": 0, "t": 40}, # Minimizes blank space around 3D cube
             "hovermode": "closest"
         }
 
-        # 4. Render the graph using Plotly.js via window object
-        # We stringify the Python dicts into JSON so JavaScript can read them
         window.Plotly.newPlot(
             "plot-container", 
             window.JSON.parse(json.dumps([trace])), 
             window.JSON.parse(json.dumps(layout))
         )
 
-    # 5. Use the JavaScript FileReader to read the file
     file_reader = window.FileReader.new()
-    # create_proxy allows the JS FileReader to call our Python function
     file_reader.onload = create_proxy(process_data)
     file_reader.readAsText(file)
