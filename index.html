@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anthropac Grapher PWA</title>
+    <title>Anthropac 3D PWA</title>
     
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
 
     <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
-    
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
     <py-config>
@@ -18,26 +17,48 @@
     </py-config>
 </head>
 <body>
-    <div class="container">
-        <h1>Anthropac Grapher</h1>
+    <div class="dashboard">
+        <header>
+            <h1>Anthropac 3D Viewer</h1>
+            <p>Upload MDS coordinates to generate an interactive spatial map.</p>
+        </header>
         
-        <div class="controls">
-            <input type="file" id="csv-upload" accept=".csv">
-            
-            <div class="color-pickers">
-                <label>Point Color: <input type="color" id="pt-color" value="#3498db"></label>
-                <label>Line Color: <input type="color" id="ln-color" value="#e74c3c"></label>
-                <label>Line Opacity: <input type="range" id="ln-opacity" min="0" max="1" step="0.1" value="0"></label>
+        <div class="card controls-card">
+            <div class="upload-section">
+                <input type="file" id="csv-upload" accept=".csv">
+                <button id="load-btn" py-click="load_csv">Load Data</button>
             </div>
             
-            <button id="generate-btn" py-click="generate_graph">Generate 3D Graph</button>
+            <div class="style-section">
+                <div class="control-group">
+                    <label>Point Color</label>
+                    <input type="color" id="pt-color" value="#3498db">
+                </div>
+                <div class="control-group">
+                    <label>Line Color</label>
+                    <input type="color" id="ln-color" value="#e74c3c">
+                </div>
+                <div class="control-group">
+                    <label>Line Opacity</label>
+                    <input type="range" id="ln-opacity" min="0" max="1" step="0.1" value="0">
+                </div>
+            </div>
         </div>
 
-        <div id="plot-container"></div>
+        <div class="card plot-card">
+            <div id="plot-container">
+                <p class="placeholder-text">Awaiting data...</p>
+            </div>
+        </div>
+
+        <div class="card table-card">
+            <div id="table-container">
+                <p class="placeholder-text">Data table will appear here.</p>
+            </div>
+        </div>
     </div>
 
     <script src="app.js"></script>
-    
     <script type="py" src="calc.py"></script>
 </body>
 </html>
