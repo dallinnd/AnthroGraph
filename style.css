@@ -1,15 +1,16 @@
 :root {
-    --bg-color: #f0f2f5;
+    --bg-color: #f4f7f6;
     --card-bg: #ffffff;
     --primary: #2c3e50;
     --accent: #3498db;
+    --accent-hover: #2980b9;
     --text-main: #333333;
-    --text-muted: #888888;
-    --border: #e1e4e8;
+    --text-muted: #7f8c8d;
+    --border: #e0e6ed;
 }
 
 body {
-    font-family: 'Inter', 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', system-ui, sans-serif;
     background-color: var(--bg-color);
     color: var(--text-main);
     margin: 0;
@@ -19,136 +20,91 @@ body {
 }
 
 .dashboard {
-    max-width: 1000px;
+    max-width: 900px;
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-header h1 {
-    margin: 0 0 5px 0;
-    color: var(--primary);
-}
-
-header p {
-    margin: 0;
-    color: var(--text-muted);
-}
+header h1 { margin: 0 0 5px 0; color: var(--primary); }
+header p { margin: 0; color: var(--text-muted); }
 
 .card {
     background: var(--card-bg);
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.1);
-    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    padding: 25px;
 }
 
-/* --- Controls Section --- */
-.controls-card {
+/* Tabs Styling */
+.tabs {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-}
-
-.upload-section {
-    display: flex;
-    gap: 10px;
-}
-
-button {
-    background-color: var(--accent);
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.2s;
-}
-
-button:hover { background-color: #2980b9; }
-
-.style-section {
-    display: flex;
-    gap: 20px;
-}
-
-.control-group {
-    display: flex;
-    flex-direction: column;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-muted);
-}
-
-/* Custom Slider Styling */
-input[type=range] {
-    -webkit-appearance: none;
-    width: 100px;
-    background: transparent;
-    margin-top: 8px;
-}
-input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    height: 16px;
-    width: 16px;
-    border-radius: 50%;
-    background: var(--accent);
-    cursor: pointer;
-    margin-top: -6px;
-}
-input[type=range]::-webkit-slider-runnable-track {
-    width: 100%;
-    height: 4px;
-    cursor: pointer;
-    background: var(--border);
-    border-radius: 2px;
-}
-
-/* --- Plot & Table Sections --- */
-#plot-container {
-    width: 100%;
-    height: 500px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.placeholder-text {
-    color: var(--text-muted);
-    font-style: italic;
-}
-
-#table-container {
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 25px;
     overflow-x: auto;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-}
-
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-}
-
-th {
-    background-color: #f8f9fa;
-    color: var(--primary);
-    font-weight: 600;
-    position: sticky;
-    top: 0;
-}
-
-tr:hover { background-color: #f1f4f8; }
-
-input[type=checkbox] {
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    color: var(--text-muted);
     cursor: pointer;
-    width: 16px;
-    height: 16px;
+    font-weight: 600;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
 }
+
+.tab-btn:hover { color: var(--primary); }
+.tab-btn.active {
+    color: var(--accent);
+    border-bottom: 3px solid var(--accent);
+}
+
+/* Upload & Buttons */
+.controls-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+input[type="file"] {
+    font-size: 15px;
+    padding: 10px;
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+    width: 100%;
+    max-width: 400px;
+    background: #fafbfc;
+}
+
+button#run-btn {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background 0.2s;
+}
+
+button#run-btn:hover { background-color: var(--accent-hover); }
+
+/* Plot Area */
+#plot-container {
+    width: 100%;
+    height: 550px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fafbfc;
+}
+
+.placeholder-text { color: var(--text-muted); font-style: italic; }
