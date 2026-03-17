@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anthropac Grapher PWA</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <py-config>
+        packages = ["pandas"]
+    </py-config>
+</head>
+<body>
+    <div class="container">
+        <h1>Anthropac Grapher</h1>
+        
+        <div class="controls">
+            <input type="file" id="csv-upload" accept=".csv">
+            
+            <div class="color-pickers">
+                <label>Point Color: <input type="color" id="pt-color" value="#3498db"></label>
+                <label>Line Color: <input type="color" id="ln-color" value="#e74c3c"></label>
+            </div>
+            
+            <button id="generate-btn" py-click="generate_graph">Generate Graph</button>
+        </div>
+
+        <div id="plot-container"></div>
+    </div>
+
+    <script src="app.js"></script>
+    
+    <script type="py" src="calc.py"></script>
+</body>
+</html>
