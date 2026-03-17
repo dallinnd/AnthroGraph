@@ -79,7 +79,7 @@ def process_data(event):
             # ---------------------------------------------------------
             # UNIVERSAL MATH: MDS SCALING
             # ---------------------------------------------------------
-            mds = MDS(n_components=2, dissimilarity='precomputed', random_state=123)
+            mds = MDS(n_components=2, dissimilarity='precomputed', random_state=123, normalized_stress='auto')
             coords = mds.fit_transform(dist_matrix_sq)
             stress = mds.stress_
             
