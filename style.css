@@ -1,62 +1,154 @@
+:root {
+    --bg-color: #f0f2f5;
+    --card-bg: #ffffff;
+    --primary: #2c3e50;
+    --accent: #3498db;
+    --text-main: #333333;
+    --text-muted: #888888;
+    --border: #e1e4e8;
+}
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
     margin: 0;
     padding: 20px;
     display: flex;
     justify-content: center;
 }
 
-.container {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    max-width: 800px;
+.dashboard {
+    max-width: 1000px;
     width: 100%;
-}
-
-h1 {
-    text-align: center;
-    color: #2c3e50;
-}
-
-.controls {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin-bottom: 25px;
-    padding: 20px;
-    background: #ecf0f1;
-    border-radius: 8px;
+    gap: 20px;
 }
 
-.color-pickers {
+header h1 {
+    margin: 0 0 5px 0;
+    color: var(--primary);
+}
+
+header p {
+    margin: 0;
+    color: var(--text-muted);
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.1);
+    padding: 20px;
+}
+
+/* --- Controls Section --- */
+.controls-card {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.upload-section {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+button:hover { background-color: #2980b9; }
+
+.style-section {
     display: flex;
     gap: 20px;
 }
 
-button {
-    background-color: #2c3e50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+.control-group {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+/* Custom Slider Styling */
+input[type=range] {
+    -webkit-appearance: none;
+    width: 100px;
+    background: transparent;
+    margin-top: 8px;
+}
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: var(--accent);
     cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
+    margin-top: -6px;
+}
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    background: var(--border);
+    border-radius: 2px;
 }
 
-button:hover {
-    background-color: #34495e;
-}
-
+/* --- Plot & Table Sections --- */
 #plot-container {
     width: 100%;
     height: 500px;
-    border: 1px dashed #bdc3c7;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.placeholder-text {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+#table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+th {
+    background-color: #f8f9fa;
+    color: var(--primary);
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+}
+
+tr:hover { background-color: #f1f4f8; }
+
+input[type=checkbox] {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
 }
