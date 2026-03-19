@@ -28,7 +28,7 @@ def process_data(event):
             # PATH 1: FREE LIST & PARTITIONS
             # ---------------------------------------------------------
             if mode in ["freelist", "freelist-filter", "partitions"]:
-                # Error checking for exact headers
+                # Error checking for exact headers required by the SOP
                 if not all(col in df.columns for col in ['Subj', 'Order', 'Code']):
                     window.alert("Error: Free List CSV must contain 'Subj', 'Order', and 'Code' columns.")
                     return
@@ -57,7 +57,7 @@ def process_data(event):
             # PATH 2: PILE SORT
             # ---------------------------------------------------------
             elif mode == "pilesort":
-                # Error checking for exact headers
+                # Error checking for exact headers required by the SOP
                 if not all(col in df.columns for col in ['Subject', 'Item', 'Pile']):
                     window.alert("Error: Pile Sort CSV must contain 'Subject', 'Item', and 'Pile' columns.")
                     return
@@ -79,6 +79,7 @@ def process_data(event):
             # ---------------------------------------------------------
             # UNIVERSAL MATH: MDS SCALING
             # ---------------------------------------------------------
+            # Added normalized_stress='auto' to suppress scikit-learn FutureWarning
             mds = MDS(n_components=2, dissimilarity='precomputed', random_state=123, normalized_stress='auto')
             coords = mds.fit_transform(dist_matrix_sq)
             stress = mds.stress_
@@ -98,7 +99,7 @@ def process_data(event):
                 mds_df["Cluster"] = clusters
                 
                 unique_clusters = np.unique(clusters)
-                colors = ['#EF553B', '#00CC96', '#AB63FA', '#FFA15A', '#19D3F3', '#FF6692']
+                colors = ['#EF553B', '#00CC96', '#AB63FA', '#FFA15A', '#19D3F3', '#FF6692', '#B6E880', '#FF97FF']
                 
                 for i, c in enumerate(unique_clusters):
                     cluster_data = mds_df[mds_df["Cluster"] == c]
@@ -110,9 +111,9 @@ def process_data(event):
                         "type": "scatter",
                         "name": f"Cluster {c}",
                         "text": cluster_data["Item"].tolist(),
-                        "textposition": "top center",
+                        "textposition": "top right", # Offset to mimic ggrepel
                         "textfont": {"weight": "bold", "color": "black"},
-                        "marker": {"size": 14, "color": color, "line": {"width": 1, "color": "white"}}
+                        "marker": {"size": 12, "color": color, "line": {"width": 1, "color": "white"}}
                     })
             
             # If standard plotting without clusters
@@ -123,9 +124,9 @@ def process_data(event):
                     "mode": "markers+text",
                     "type": "scatter",
                     "text": mds_df["Item"].tolist(),
-                    "textposition": "top center",
+                    "textposition": "top right", # Offset to mimic ggrepel
                     "textfont": {"weight": "bold", "color": "black"},
-                    "marker": {"size": 14, "color": "#f39c12"}
+                    "marker": {"size": 12, "color": "#f39c12"}
                 })
                 
             # Dynamic Layout Titles based on Mode
@@ -136,16 +137,39 @@ def process_data(event):
                 "pilesort": f"Pile Sort MDS: Average-Link Partitions (k={k_val})<br><sup>Stress: {stress:.3f}</sup>"
             }
 
+            # Define axes titles based on Anthropac conventions
+            x_title = "Dimension 1" if mode == "pilesort" else "NMDS1"
+            y_title = "Dimension 2" if mode == "pilesort" else "NMDS2"
+
+            # Layout to mimic R's theme_bw()
             layout = {
                 "title": titles[mode],
-                # Strip out axes lines to mimic R's theme_bw/minimal appearance
-                "xaxis": {"title": "", "showgrid": False, "zeroline": False, "showticklabels": False},
-                "yaxis": {"title": "", "showgrid": False, "zeroline": False, "showticklabels": False},
+                "xaxis": {
+                    "title": x_title, 
+                    "showgrid": True, 
+                    "gridcolor": "#e0e6ed", 
+                    "zeroline": False, 
+                    "showticklabels": True,
+                    "linecolor": "black",
+                    "mirror": True
+                },
+                "yaxis": {
+                    "title": y_title, 
+                    "showgrid": True, 
+                    "gridcolor": "#e0e6ed", 
+                    "zeroline": False, 
+                    "showticklabels": True,
+                    "linecolor": "black",
+                    "mirror": True
+                },
                 "plot_bgcolor": "#ffffff",
                 "paper_bgcolor": "#ffffff",
                 "hovermode": "closest",
-                "margin": {"t": 80, "b": 40, "l": 40, "r": 40}
+                "margin": {"t": 80, "b": 60, "l": 60, "r": 40}
             }
+
+            # Clear the "Awaiting data..." placeholder text before plotting
+            document.getElementById("plot-container").innerHTML = ""
 
             # Draw the Plot
             window.Plotly.newPlot("plot-container", window.JSON.parse(json.dumps(traces)), window.JSON.parse(json.dumps(layout)))
